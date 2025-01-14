@@ -5,23 +5,21 @@ on:
       branches:
         - main
   schedule:
-    # 테스트를 원한다면, `한국 표준시 = UTC + 9` 참고해서 시간 수정한 후 테스트해보기
-    - cron: '0 0 * * *'  # 매일 자정에 실행, UTC 협정 세계시 기준 (한국 시간 기준 오전 9시)
-    - cron: '0 15 * * *' # 매일 자정에 실행, 한국 시간 기준 (UTC 15:00)
+    - cron: '0 0 * * *'
+    - cron: '0 15 * * *'
 
 jobs:
   update_blog:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: write
+      
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-
-    - name: Push changes
-      run: |
-        git config --global user.name 'github-actions[bot]'
-        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        git push https://${{ secrets.GH_PAT }}@github.com/TaeseokKim9148/velog.git
+      with:
+        token: ${{ secrets.GH_PAT }}
+        persist-credentials: false
 
     - name: Set up Python
       uses: actions/setup-python@v2
@@ -32,5 +30,68 @@ jobs:
       run: |
         pip install feedparser gitpython
 
+    - name: Create script directory
+      run: mkdir -p scripts
+
+    - name: Create Python script
+      run: |
+        cat > scripts/update_blog.py << 'EOL'
+        import feedparser
+        import os
+        import re
+        from datetime import datetime
+        import git
+        from pathlib import Path
+
+        def sanitize_filename(title):
+            return re.sub(r'[\\/*?:"<>|]', "", title)
+
+        def create_markdown(item):
+            content = f"""---
+        title: "{item.title}"
+        date: {item.published}
+        categories: Velog
+        link: {item.link}
+        ---
+
+        {item.description}
+        """
+            return content
+
+        def main():
+            posts_dir = Path("velog-posts")
+            posts_dir.mkdir(exist_ok=True)
+
+            feed = feedparser.parse("https://v2.velog.io/rss/kim_taixi")
+
+            for item in feed.entries:
+                date = datetime.strptime(item.published, "%a, %d %b %Y %H:%M:%S %Z").strftime("%Y-%m-%d")
+                filename = f"{date}-{sanitize_filename(item.title)}.md"
+                file_path = posts_dir / filename
+
+                content = create_markdown(item)
+                with open(file_path, "w", encoding="utf-8") as f:
+                    f.write(content)
+
+            try:
+                repo = git.Repo()
+                repo.index.add(["velog-posts/*"])
+                repo.index.commit("📝 벨로그 포스트 자동 업데이트")
+            except Exception as e:
+                print(f"Git 작업 중 오류 발생: {e}")
+
+        if __name__ == "__main__":
+            main()
+        EOL
+
     - name: Run script
       run: python scripts/update_blog.py
+
+    - name: Push changes
+      env:
+        GH_PAT: ${{ secrets.GH_PAT }}
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        git remote set-url origin "https://${{ secrets.GH_PAT }}@github.com/TaeseokKim9148/velog.git"
+        git push
