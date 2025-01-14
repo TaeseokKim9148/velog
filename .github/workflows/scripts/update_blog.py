@@ -1,45 +1,54 @@
 import feedparser
-import git
 import os
+import re
+from datetime import datetime
+import git
+from pathlib import Path
 
-# 벨로그 RSS 피드 URL
-# example : rss_url = 'https://api.velog.io/rss/@rimgosu'
-rss_url = 'https://api.velog.io/rss/@kim_taixi'
+def sanitize_filename(title):
+    """파일 이름으로 사용할 수 없는 문자 제거"""
+    return re.sub(r'[\\/*?:"<>|]', "", title)
 
-# 깃허브 레포지토리 경로
-repo_path = '.'
+def create_markdown(item):
+    """마크다운 파일 내용 생성"""
+    content = f"""---
+title: "{item.title}"
+date: {item.published}
+categories: Velog
+link: {item.link}
+---
 
-# 'velog-posts' 폴더 경로
-posts_dir = os.path.join(repo_path, 'velog-posts')
+{item.description}
+"""
+    return content
 
-# 'velog-posts' 폴더가 없다면 생성
-if not os.path.exists(posts_dir):
-    os.makedirs(posts_dir)
+def main():
+    # velog-posts 디렉토리 생성
+    posts_dir = Path("velog-posts")
+    posts_dir.mkdir(exist_ok=True)
 
-# 레포지토리 로드
-repo = git.Repo(repo_path)
+    # Velog RSS 피드 가져오기
+    feed = feedparser.parse("https://v2.velog.io/rss/kim_taixi")  # 본인의 Velog 아이디로 변경
 
-# RSS 피드 파싱
-feed = feedparser.parse(rss_url)
+    # 각 포스트를 마크다운 파일로 저장
+    for item in feed.entries:
+        # 파일명 생성 (날짜-제목.md)
+        date = datetime.strptime(item.published, "%a, %d %b %Y %H:%M:%S %Z").strftime("%Y-%m-%d")
+        filename = f"{date}-{sanitize_filename(item.title)}.md"
+        file_path = posts_dir / filename
 
-# 각 글을 파일로 저장하고 커밋
-for entry in feed.entries:
-    # 파일 이름에서 유효하지 않은 문자 제거 또는 대체
-    file_name = entry.title
-    file_name = file_name.replace('/', '-')  # 슬래시를 대시로 대체
-    file_name = file_name.replace('\\', '-')  # 백슬래시를 대시로 대체
-    # 필요에 따라 추가 문자 대체
-    file_name += '.md'
-    file_path = os.path.join(posts_dir, file_name)
+        # 마크다운 파일 생성
+        content = create_markdown(item)
+        with open(file_path, "w", encoding="utf-8") as f:
+            f.write(content)
 
-    # 파일이 이미 존재하지 않으면 생성
-    if not os.path.exists(file_path):
-        with open(file_path, 'w', encoding='utf-8') as file:
-            file.write(entry.description)  # 글 내용을 파일에 작성
+    # Git 커밋
+    try:
+        repo = git.Repo()
+        repo.index.add(["velog-posts/*"])
+        repo.index.commit("📝 벨로그 포스트 자동 업데이트")
+    except Exception as e:
+        print(f"Git 작업 중 오류 발생: {e}")
 
-        # 깃허브 커밋
-        repo.git.add(file_path)
-        repo.git.commit('-m', f'Add post: {entry.title}')
-
-# 변경 사항을 깃허브에 푸시
-repo.git.push()
+if __name__ == "__main__":
+    main()
