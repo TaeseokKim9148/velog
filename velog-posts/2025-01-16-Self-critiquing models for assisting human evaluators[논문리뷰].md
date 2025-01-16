@@ -39,5 +39,3 @@ D와 C 간의 격차(CD gap): 모델이 결함을 알고 있다고 판단되었�
 <p>CD 격차는 작업에 따라 달라집니다.</p>
 <h3 id="추가-자료가-있으면-좋겠다">추가 자료가 있으면 좋겠다.</h3>
 <h2 id="참고자료">참고자료</h2>
-<p><a href="https://digitalbourgeois.tistory.com/482">https://digitalbourgeois.tistory.com/482</a>
-<a href="https://www.koreaodm.com/%EC%9D%B8%EA%B3%B5%EC%A7%80%EB%8A%A5/hyde%EB%A1%9C-rag-%ED%96%A5%EC%83%81%EC%8B%9C%ED%82%A4%EA%B8%B0-%EC%9D%B4%EB%A1%A0%EA%B3%BC-%EC%A0%81%EC%9A%A9-%EB%B0%A9%EC%95%88/">https://www.koreaodm.com/%EC%9D%B8%EA%B3%B5%EC%A7%80%EB%8A%A5/hyde%EB%A1%9C-rag-%ED%96%A5%EC%83%81%EC%8B%9C%ED%82%A4%EA%B8%B0-%EC%9D%B4%EB%A1%A0%EA%B3%BC-%EC%A0%81%EC%9A%A9-%EB%B0%A9%EC%95%88/</a></p>
