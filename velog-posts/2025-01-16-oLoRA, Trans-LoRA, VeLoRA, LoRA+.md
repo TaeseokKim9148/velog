@@ -6,7 +6,7 @@ link: https://velog.io/@kim_taixi/oLoRA
 ---
 
 <p><strong>Parameter-Efficient Fine-Tuning (PEFT)</strong>은 모델의 모든 파라미터를 조정하지 않고, 특정 파라미터 집합만을 업데이트하여 모델을 튜닝하는 방법</p>
-<h2 id="lora">LoRA</h2>
+<h2 id="olora">oLoRA</h2>
 <ul>
 <li>OLoRA는 QR 분해를 통해 직교 행렬(orthonormal matrix)을 초기화하여 모델 학습의 수렴 속도를 크게 향상 </li>
 <li>OLoRA는 LoRA의 효율성(학습 가능한 매개변수 수 및 GPU 메모리 사용량)을 유지하면서도, LLM 학습의 수렴을 가속화하고 성능을 향상</li>
@@ -37,7 +37,7 @@ link: https://velog.io/@kim_taixi/oLoRA
 <li>역전파(backward pass) 시 압축된 데이터를 복원해 그래디언트 계산에 사용</li>
 </ul>
 <p><img alt="" src="https://velog.velcdn.com/images/kim_taixi/post/d8217183-06da-496e-9617-145ce244a7a4/image.png" /></p>
-<h2 id="lora-1">LoRA+</h2>
+<h2 id="lora">LoRA+</h2>
 <ul>
 <li>어댑터 행렬𝐴와𝐵에 고정된 비율의 서로 다른 학습률을 적용</li>
 <li>학습률 차이를 도입하는 단순한 변화로, LoRA의 한계를 극복하며 대규모 모델에서 더 빠르고 효율적인 학습을 가능</li>
