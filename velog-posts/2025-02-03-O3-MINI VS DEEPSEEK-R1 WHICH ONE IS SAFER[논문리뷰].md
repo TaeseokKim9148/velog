@@ -24,8 +24,8 @@ link: https://velog.io/@kim_taixi/O3-MINI-VS-DEEPSEEK-R1-WHICH-ONE-IS-SAFER
 <li>다지선다형 질문 기반 테스트</li>
 <li>LLM을 활용한 안전성 검사 모델 개발(LlamaGuard, ShieldLM)</li>
 <li>Red Teaming 및 Jailbreak 공격을 통한 테스트<ul>
-<li>Red Teaming :사람이 직접 테스트 입력</li>
-<li>차단해야 할 정보를 제공하도록 유도 방법</li>
+<li>Red Teaming : 사람이 직접 테스트 입력</li>
+<li>Jailbreak : 차단해야 할 정보를 제공하도록 유도 방법</li>
 </ul>
 </li>
 <li>대규모 벤치마크 기반 테스트</li>
