@@ -18,8 +18,8 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        persist-credentials: false
+        token: ${{ secrets.GH_PAT }}
+        persist-credentials: true   # persist-credentials를 true로 수정
 
     - name: Set up Python
       uses: actions/setup-python@v2
@@ -88,10 +88,7 @@ jobs:
       run: python scripts/update_blog.py
 
     - name: Push changes
-      env:
-        GH_PAT: ${{ secrets.GH_PAT }}
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        git remote set-url origin "https://x-access-token:${GH_PAT}@github.com/TaeseokKim9148/velog.git"
         git push
