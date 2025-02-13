@@ -12,14 +12,14 @@ jobs:
   update_blog:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: write      # GitHub Token에 쓰기 권한 부여
       
     steps:
     - name: Checkout
       uses: actions/checkout@v2
       with:
-        token: ${{ secrets.GH_PAT }}
-        persist-credentials: true   # persist-credentials를 true로 수정
+        token: ${{ secrets.GITHUB_TOKEN }}    # GitHub 기본 제공 토큰 사용
+        # persist-credentials 옵션은 제거 (기본값 true 사용)
 
     - name: Set up Python
       uses: actions/setup-python@v2
@@ -91,4 +91,4 @@ jobs:
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        git push
+        git push origin HEAD:main
