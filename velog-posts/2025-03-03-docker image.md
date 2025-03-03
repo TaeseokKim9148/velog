@@ -11,6 +11,6 @@ link: https://velog.io/@kim_taixi/docker-image
 <p><strong>tag</strong> : 주소 </p>
 <p><strong>tar</strong> : 묶음 </p>
 <p><strong>rmi</strong> : 삭제</p>
-<p><strong>psuh</strong> : 업그레이드</p>
+<p><strong>psuh</strong> : 업로드</p>
 <p><strong>docker pull httpd:2.4 :</strong> pull 이미지 다운로드</p>
 <p><strong>docker image inspect httpd: 2.4 :</strong> 이미지 json 상태확인</p>
